@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\Repositories;
+namespace App\Infrastructure\Repositories;
 
 use App\Models\User;
-use Core\Entities\UserEntity;
-use Core\Repositories\UserRepository;
+use App\Core\Entity\UserEntity;
+use App\Core\Repositories\UserRepository;
 
 class UserDatabaseRepository implements UserRepository
 {
-    public function getUserById(int $id): UserEntity
+    public function getUserById(int $id): ?UserEntity
     {
-        return User::findOrFail($id);
+        return User::where('id', $id)->first();
     }
 }

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Application\Service\User;
+namespace App\Service;
 
-use Core\Entities\UserEntity;
-use Repositories\UserRepository;
+use App\Core\Entity\UserEntity;
+use App\Core\Repositories\UserRepository;
 
 class UserShow
 {
@@ -13,7 +13,7 @@ class UserShow
         private UserRepository $repository
     ) {}
 
-    public function run(int $id): UserEntity
+    public function run(int $id): ?UserEntity
     {
         return $this->repository->getUserById($id);
     }

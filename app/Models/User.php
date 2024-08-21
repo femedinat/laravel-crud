@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Core\Entity\UserEntity;
+use Core\ValueObject\EmailValueObject;
+use Core\ValueObject\HashedPasswordValueObject;
+use Core\ValueObject\PasswordValueObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, UserEntity
 {
     use HasFactory, Notifiable;
 
@@ -44,6 +47,51 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getId(): int
+    {
+        return $this->attributes['id'];
+    }
+
+    public function getName(): string
+    {
+        return $this->attributes['name'];
+    }
+
+    public function setName(string $name): self
+    {
+        $this->attributes['name'] = $name;
+
+        return $this;
+    }
+
+    public function getEmail(): EmailValueObject
+    {
+        return new EmailValueObject($this->attributes['email']);
+    }
+
+    public function setEmail(EmailValueObject $email): self
+    {
+        $this->attributes['email'] = (string) $email;
+
+        return $this;
+    }
+
+    public function getPassword(): ?HashedPasswordValueObject
+    {
+        if (empty($this->attributes['password'])) {
+            return null;
+        }
+
+        return new HashedPasswordValueObject($this->attributes['password']);
+    }
+
+    public function setPassword(PasswordValueObject $password): self
+    {
+        $this->attributes['password'] = (string) $password->hashed();
+
+        return $this;
     }
 
     public function getJWTIdentifier()
